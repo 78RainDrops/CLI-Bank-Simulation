@@ -4,8 +4,9 @@
 import accounts as acc
 
 def main():
-    account_db = acc.load_account()
     while True:
+        account_db = acc.load_account()
+        print("otem")
         print('''\nWelcome to CLI Bank!
             1. Create Account
             2. Deposit
@@ -32,4 +33,5 @@ def main():
         else:
             print(f"Choice {operation_choice} is invalid.")
 
-main()
+if __name__ == "__main__":
+    main()

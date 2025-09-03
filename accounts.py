@@ -1,6 +1,8 @@
+import csv
 from pathlib import Path
 
-path = Path('cli_bank_simulation/accounts.txt')
+path = Path('accounts.csv')
+FIELDNAMES = ['Account Number','Name','Balance']
 
 def accounts(account_db): #done
     account_num = input("Enter account number: ")
@@ -19,9 +21,9 @@ def accounts(account_db): #done
         else:
             break
     
-    account_info = {"name" : name, "balance" : balance}
+    account_info = {"Name" : name, "Balance" : balance}
     account_db[account_num] = account_info
-    save_account(account_db)
+    add_account(account_num,account_info)
 
 
 def deposit(account_db):#done
@@ -39,8 +41,8 @@ def deposit(account_db):#done
         else:
             break
 
-    balance = account_db[account_num]['balance'] + deposit
-    account_db[account_num]['balance'] = balance
+    balance = account_db[account_num]['Balance'] + deposit
+    account_db[account_num]['Balance'] = balance
 
     save_account(account_db)
 
@@ -52,29 +54,28 @@ def deposit(account_db):#done
 
 
 def withdraw(account_db):
+    account_num = input("Enter account number: ")
+    if account_num not in account_db:
+        print("Account don't exist")
+        return
+
     while True:
-        account_num = input("Enter account number: ")
-        if account_num not in account_db:
-            print("Account don't exist")
-            return
-
-        while True:
-            try:
-                withdraw = int(input("Enter amount to withdraw: "))
-                assert withdraw >= 0
-            except AssertionError:
-                print("\nCan't Deposti negative number")
-            else:
-                balance = account_db[account_num]['balance']
+        try:
+            withdraw = int(input("Enter amount to withdraw: "))
+            assert withdraw >= 0
+        except AssertionError:
+            print("\nCan't Deposti negative number")
+        else:
+            balance = account_db[account_num]['Balance']
                 
-                if withdraw > balance:
-                    print("Not enough balance.")
-                    print(f"\nCurrent balance {balance}")
-                    return
+            if withdraw > balance:
+                print("Not enough balance.")
+                print(f"\nCurrent balance {balance}")
+                return
 
-                balance -= withdraw
-                account_db[account_num]['balance'] = balance
-                break
+            balance -= withdraw
+            account_db[account_num]['Balance'] = balance
+            break
         save_account(account_db)
         
         for k, v in account_db.items():
@@ -101,10 +102,26 @@ def check_balance(account_db):
 
 
 def save_account(accounts):
-    with open(path, "w") as f:
+    with open(path, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=['Account Number','Name','Balance'])
+        writer.writeheader()
         for account_num, details in accounts.items():
-            line = f"{account_num}, {details['name']}, {details['balance']}\n"
-            f.write(line)
+            writer.writerow({
+                    'Account Number': account_num,
+                    'Name': details['Name'],
+                    'Balance': details['Balance']
+                })
+
+
+def add_account(acc_number, details):
+    with open(path, 'a',newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=['Account Number','Name','Balance'])
+        writer.writerow({
+            'Account Number' : acc_number,
+            'Name' : details['Name'],
+            'Balance' : details['Balance']
+        })
+    print('Account Successfully Created!')
 
 
 def load_account():
@@ -112,11 +129,11 @@ def load_account():
     account_db = {}
 
     with path.open('r') as f:
-        for line in f:
-            acc_num, name, balance = line.rstrip().split(',')
-            account_db[acc_num] = {
-                'name' : name,
-                'balance' : int(balance),
-            }
-
+        reader = csv.DictReader(f)
+        for row in reader:
+            account_db[row['Account Number']] = {
+                    'Name': row['Name'],
+                    'Balance' : int(row['Balance'])
+                }
+            
     return account_db
