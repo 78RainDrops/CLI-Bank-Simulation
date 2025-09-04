@@ -1,0 +1,34 @@
+{
+    "users": {
+        "112": {
+            "name": "Lorence",
+            "pin": 421,
+            "balance": 400
+        },
+        "1234": {
+            "name": "ralph",
+            "pin": 123,
+            "balance": 50
+        },
+        "111": {
+            "name": "Lorence",
+            "pin": 321,
+            "balance": 100
+        },
+        "1234": {
+            "name": "ralph",
+            "pin": 123,
+            "balance": 50
+        },
+        "111": {
+            "name": "Lorence",
+            "pin": 321,
+            "balance": 100
+        },
+        "112": {
+            "name": "Lorence",
+            "pin": 421,
+            "balance": 400
+        }
+    }
+}
