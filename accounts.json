@@ -1,14 +1,24 @@
 {
     "users": {
         "321": {
-            "name": "lore",
-            "pin": 111,
-            "balance": 100
+            "Name": "lore",
+            "Pin": "111",
+            "Balance": 140
         },
         "1234": {
-            "name": "ralph",
-            "pin": 123,
-            "balance": 50
+            "Name": "ralph",
+            "Pin": 123,
+            "Balance": 50
+        },
+        "222": {
+            "Name": "rel",
+            "Pin": 111,
+            "Balance": 100
+        },
+        "123": {
+            "Name": "Ralh",
+            "Pin": "111",
+            "Balance": 50
         }
     }
 }

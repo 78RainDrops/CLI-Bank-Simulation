@@ -4,175 +4,88 @@
 from bank_system import BankSystem
 
 def main():
+    bank = BankSystem()
     while True:
-        # account_db = load_account()
-        bank = BankSystem()
-        print("otem")
         print('''\nWelcome to CLI Bank!
             1. Create Account
-            2. Deposit
-            3. Withdraw
-            4. Check Balance 
-            5. Exit''')
+            2. Login
+            3. Exit''')
                 
         operation_choice = int(input("Choose an option: "))
         if operation_choice == 1:
-            accounts_db = bank.accounts['users']
-            accounts(accounts_db)
-            pass
-
+            accounts(bank)
         elif operation_choice == 2:
-            pass
+            account = login(bank)
+            if account:
+                menu(account,bank)
 
         elif operation_choice == 3:
-            pass
-        elif operation_choice == 4:
-            pass
-
-        elif operation_choice == 5:
-            pass
             break
         else:
-            print(f"Choice {operation_choice} is invalid.")
-
-
-
+            print(f"Invalid Choice.")
 
     """
     functions
     """
-def accounts(account_db):
+def accounts(bank):
     account_num = input("Enter account number: ")
-    if account_num in account_db:
-        print("Account number is already taken")
-        return
-    
+    if not account_num.isdigit():
+        print("Account Number can only be numeric")
+        return False
     name = input("Enter name: ")
 
-    while True:
-        try:
-            balance = int(input("Enter initial deposit: "))
-            assert balance >= 0
-        except AssertionError:
-            print("\nCan't have a negative balance")
-        else:
-            break
+    if not name.strip():
+        print("Name can't be empty")
+        return False
+
+    pin = input("Set pin: ")
+    if not pin.isdigit():
+        print("Pin can only be numberic")
+
+    try:
+        balance = int(input("Enter initial deposit: "))
+        assert balance >= 0
+    except AssertionError:
+        print("\nCan't have a negative balance")
+        return False
+
+    bank.add_account(account_num,name,pin,balance)
+
+
+def login(bank):
+    acc_num = input("Enter account number: ")
+    pin = input("Enter PIN: ")
+    account = bank.login(acc_num, pin)
     
-    # account_info = {"Name" : name, "Balance" : balance}
-    # account_db[account_num] = account_info
-    # add_account(account_num,account_info)
+    return account
 
-
-def deposit(account_db):#done
-    account_num = input("Enter account number: ")
-    if account_num not in account_db:
-        print("Account don't exist")
-        return
-
+def menu(account,bank):
     while True:
-        try:
-            deposit = int(input("Enter amount to deposit: "))
-            assert deposit >= 0
-        except AssertionError:
-            print("\nCan't Deposti negative number")
-        else:
-            break
-
-    balance = account_db[account_num]['Balance'] + deposit
-    account_db[account_num]['Balance'] = balance
-
-    # save_account(account_db)
-
-    for k, v in account_db.items():
-        if k == account_num:
-            print(f'Account Name: {k}')
-            for acc_key, acc_value in v.items():
-                print(f"{acc_key.title()}: {acc_value}")
-
-
-def withdraw(account_db):
-    account_num = input("Enter account number: ")
-    if account_num not in account_db:
-        print("Account don't exist")
-        return
-
-    while True:
-        try:
-            withdraw = int(input("Enter amount to withdraw: "))
-            assert withdraw >= 0
-        except AssertionError:
-            print("\nCan't Deposti negative number")
-        else:
-            balance = account_db[account_num]['Balance']
-                
-            if withdraw > balance:
-                print("Not enough balance.")
-                print(f"\nCurrent balance {balance}")
-                return
-
-            balance -= withdraw
-            account_db[account_num]['Balance'] = balance
-            break
-        # save_account(account_db)
+        print(account)
+        print('''
+            ---Account Name---
+            1. Deposit
+            2. Withdraw
+            3. Check Balance
+            4. Logout
+            ''')
+        choice = input("Choose option: ")
         
-        for k, v in account_db.items():
-            if k == account_num:
-                print(f'Account Name: {k}')
-                for acc_key, acc_value in v.items():
-                    print(f"{acc_key.title()}: {acc_value}")
+        if choice == "1":
+            amount = int(input("Amount: "))
+            account.deposit(amount)
+            bank.save_accounts()
+        elif choice == "2":
+            amount = int(input("Amount: "))
+            account.withdraw(amount)
+            bank.save_accounts()
+        elif choice == "3":
+            print(f"Balance: {account.check_balance()}")
+        elif choice == "4":
+            break
+        else:
+            print("Invalid choice.")
 
 
-def check_balance(account_db):
-    while True:
-        account_num = input("Enter account number: ")
-        if account_num not in account_db:
-            print("Account don't exist")
-            return
-            
-        for k, v in account_db.items():
-            if k == account_num:
-                print(f'Account Name: {k}')
-                for acc_key, acc_value in v.items():
-                    print(f"{acc_key.title()}: {acc_value}")
-        break
-    return 
-
-
-# def save_account(accounts):
-#     with open(path, "w", newline="") as f:
-#         writer = csv.DictWriter(f, fieldnames=['Account Number','Name','Balance'])
-#         writer.writeheader()
-#         for account_num, details in accounts.items():
-#             writer.writerow({
-#                     'Account Number': account_num,
-#                     'Name': details['Name'],
-#                     'Balance': details['Balance']
-#                 })
-
-
-# def add_account(acc_number, details):
-#     with open(path, 'a',newline="") as f:
-#         writer = csv.DictWriter(f, fieldnames=['Account Number','Name','Balance'])
-#         writer.writerow({
-#             'Account Number' : acc_number,
-#             'Name' : details['Name'],
-#             'Balance' : details['Balance']
-#         })
-#     print('Account Successfully Created!')
-
-
-# def load_account():
-
-#     account_db = {}
-
-#     with path.open('r') as f:
-#         reader = csv.DictReader(f)
-#         for row in reader:
-#             account_db[row['Account Number']] = {
-#                     'Name': row['Name'],
-#                     'Balance' : int(row['Balance'])
-#                 }
-            
-#     return account_db
 if __name__ == "__main__":
     main()
